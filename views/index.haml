@@ -1,8 +1,21 @@
-#heading
-  %h1 project starling
-  %h2 Or, where in the world does ThoughtWorks come from?
+!!! 5
+%html
+  %head
+    %link{ :type => "text/css", :href => "/stylesheet.css", :rel => "stylesheet" }
+    %script{ :type => "text/javascript", :src => "http://maps.google.com/maps/api/js?sensor=false" }
+    %script{ :type => "text/javascript", :src => "/starling.js" }
 
-#body
-  %form{ :method => 'post' action => 'nest' }
-    %input#name{ :type => 'text', :name => 'name' }
-    %input#birthplace { :type => 'text', :name => 'birthplace' }
+  %body{ :onload => "initialize()" }
+    #heading
+      %h1 project starling
+      %h2 Or, where in the world does ThoughtWorks come from?
+  
+    #body
+      #world
+      #where
+        %form{ :method => 'post', :action => 'nest' }
+          %label{ :for => "name" }Name:
+          %input#name{ :type => 'text', :name => 'name' }
+          %label{ :for => "birthplace" }Born:
+          %input#birthplace{ :type => 'text', :name => 'birthplace' }
+          %input{ :type=> 'button', :onclick => 'addBirthplace()', :value => 'here' }
