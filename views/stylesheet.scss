@@ -12,6 +12,20 @@ body {
     margin: 0.7em;
 }
 
+#titles {
+    width: 50%;
+}
+
+#twer {
+    h1 {
+	font-size: 1.2em;
+    }
+    h2 {
+	font-size: 0.8em;
+	margin-top: -0.5em;
+    }
+}
+
 h1 {
     font-family: 'Baskerville';
     font-style: italic;
@@ -27,6 +41,11 @@ h2 {
 #body {
     width: 100%;
     height: 100%;
+}
+
+#where {
+    float: right;
+    margin-top: -50px;
 }
 
 #world {
