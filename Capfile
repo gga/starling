@@ -22,7 +22,7 @@ before :deploy do
 end
 
 after 'deploy:update' do
-  run "cd #{current_path} && bundle install --deployment --local --without='test development'"
+  run "cd #{current_path} && /home/giles_a/.gems/bin/bundle install --deployment --local --without='test development'"
 end
 
 after :deploy do

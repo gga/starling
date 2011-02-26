@@ -30,7 +30,6 @@ end
 get '/twer' do
   content_type :json
   all_twer = ThoughtWorker.all.collect do |twer|
-    logger.debug twer.inspect
     {
       'name' => twer.name,
       'latitude' => twer.latitude,
