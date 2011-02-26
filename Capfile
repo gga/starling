@@ -1,5 +1,7 @@
 load 'deploy' if respond_to?(:namespace) # cap2 differentiator
 
+require 'fileutils'
+
 default_run_options[:pty] = true
 
 set :user, 'giles_a'
@@ -14,6 +16,10 @@ set :scm, :none
 set :repository, "."
 
 server domain, :app, :web
+
+before :deploy do
+  FileUtils::rm_rf "vendor/bundle"
+end
 
 after 'deploy:update' do
   run "cd #{current_path} && bundle install --deployment --local --without='test development'"
