@@ -4,13 +4,12 @@ require 'haml'
 require 'sass'
 require 'active_record'
 
+require 'lib/env'
 require 'lib/thoughtworker'
 
 configure do
   LOGGER = Logger.new("sinatra.log") 
-
-  ActiveRecord::Base.establish_connection(:adapter => 'sqlite3',
-                                          :database => 'db/starling.db')
+  init
 end
  
 helpers do
