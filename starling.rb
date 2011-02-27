@@ -51,13 +51,16 @@ delete '/twer/:id' do |twer_id|
 end
 
 post '/nest' do
-  twer = ThoughtWorker.new(:name => params[:name],
-                           :human_address => params[:human_address],
-                           :latitude => params[:latitude],
-                           :longitude => params[:longitude])
-  if twer.save
+  logger.debug "received nest post"
+  begin
+    logger.debug params.inspect
+    twer = ThoughtWorker.create!(:name => params[:name],
+                                 :human_address => params[:human_address],
+                                 :latitude => params[:latitude],
+                                 :longitude => params[:longitude],
+                                 :country => params[:country])
     redirect "/twer/#{twer.id}"
-  else
+  rescue ActiveRecord::RecordInvalid
     400
   end
 end

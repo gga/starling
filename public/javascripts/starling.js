@@ -7,6 +7,7 @@ var thoughtworkers = {};
 function reset() {
     $("#where").slideDown();
     $("#not-found").slideUp();
+    $("#bad-request").slideUp();
 }
 
 function createMarker(id, name, location, info_html) {
@@ -55,24 +56,29 @@ $(document).ready(function() {
 });
 
 function addBirthplace() {
-    var birthplace = document.getElementById("birthplace").value;
-    var thoughtworker = document.getElementById("name").value;
+    var birthplace = $("#birthplace").val();
 
     geocoder.geocode( { address: birthplace }, function(results, status) {
 	if (status == google.maps.GeocoderStatus.OK) {
-	    $.post("/nest", {
-		name: thoughtworker,
-		human_address: birthplace,
-		latitude: results[0].geometry.location.lat(),
-		longitude: results[0].geometry.location.lng()
-	    }, function(twer) {
-		var place = new google.maps.LatLng(twer.latitude,
-						   twer.longitude);
-		createMarker(twer.id,
-			     twer.name,
-			     place,
-			     twer.html);
-	    });
+	    $.post("/nest",
+		   {
+		       name: $("#name").val(),
+		       human_address: birthplace,
+		       latitude: results[0].geometry.location.lat(),
+		       longitude: results[0].geometry.location.lng(),
+		       country: $("#country option:selected").val()
+		   },
+		   function(twer) {
+		       var place = new google.maps.LatLng(twer.latitude,
+							  twer.longitude);
+		       createMarker(twer.id,
+				    twer.name,
+				    place,
+				    twer.html);
+		   }).error(function() {
+		       $("#bad-request").slideDown();
+		       $("#where").slideUp();
+		   });
 	} else {
 	    $("#bad-loc").html(birthplace);
 	    $("#not-found").slideDown();

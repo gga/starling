@@ -70,11 +70,22 @@ h2 {
 #adding {
     float: right;
     margin-top: -50px;
-    width: 460px;
+    width: 500px;
     height: 25px;
 }
 
-#not-found {
+#country {
+    float: right;
+    select {
+	width: 165px;
+    }
+}
+
+input[name=birthplace] {
+    width: 160px;
+}
+
+#not-found, #bad-request {
     display: none;
     margin-top: -25px;
     a {
