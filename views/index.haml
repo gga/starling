@@ -12,13 +12,21 @@
       #titles
         %h1 project starling
         %h2 Or, where in the world does ThoughtWorks come from?
-      #where
-        %form#nesting{ :method => 'post', :action => 'nest' }
-          %label{ :for => "name" }Name:
-          %input#name{ :type => 'text', :name => 'name' }
-          %label{ :for => "birthplace" }Born:
-          %input#birthplace{ :type => 'text', :name => 'birthplace' }
-          %input{ :type=> 'button', :onclick => 'addBirthplace()', :value => 'here' }
-  
+      #adding
+        #where
+          %form#nesting{ :method => 'post', :action => 'nest' }
+            %label{ :for => "name" }Name:
+            %input#name{ :type => 'text', :name => 'name' }
+            %label{ :for => "birthplace" }Born in:
+            %input#birthplace{ :type => 'text', :name => 'birthplace' }
+            %input{ :type=> 'button', :onclick => 'addBirthplace()', :value => 'Pin Me!' }
+        #not-found
+          %p
+            Couldn't find
+            %span#bad-loc
+            %br
+            %a{ :href => "#", :onclick => "javascript:reset();" }
+              Try again?
+    
     #body
       #world

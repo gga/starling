@@ -17,6 +17,16 @@ helpers do
   def logger
     LOGGER
   end
+
+  def thoughtworker(twer)
+    {
+      'id' => twer.id,
+      'name' => twer.name,
+      'latitude' => twer.latitude,
+      'longitude' => twer.longitude,
+      'html' => haml(:twer, :locals => { :twer => twer })
+    }
+  end
 end
 
 get '/' do
@@ -29,24 +39,19 @@ end
 
 get '/twer' do
   content_type :json
-  all_twer = ThoughtWorker.all.collect do |twer|
-    {
-      'name' => twer.name,
-      'latitude' => twer.latitude,
-      'longitude' => twer.longitude,
-      'html' => haml(:twer, :locals => { :twer => twer })
-    }
-  end
-  all_twer.to_json
+  ThoughtWorker.all.collect { |twer| thoughtworker(twer) }.to_json
 end
 
 get '/twer/:id' do |twer_id|
-  twer = ThoughtWorker.find twer_id
-  haml :twer, :locals => { :twer => twer }
+  content_type :json
+  thoughtworker(ThoughtWorker.find(twer_id)).to_json
+end
+
+delete '/twer/:id' do |twer_id|
+  ThoughtWorker.delete(twer_id)
 end
 
 post '/nest' do
-  request.body.rewind
   twer = ThoughtWorker.new(:name => params[:name],
                            :human_address => params[:human_address],
                            :latitude => params[:latitude],

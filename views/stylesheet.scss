@@ -1,11 +1,28 @@
+$tw_purple: #6C649C;
+
+@mixin button_style {
+  font-family: "Gill Sans", Helvetica, Arial, sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0.125em 0 0 0;
+  background-color: $tw_purple;
+  color: white;
+  border: 0;
+  font-size: 0.9em;
+  line-height: 1.375;
+  padding: 0.2em 0.5em;
+}
+
 html {
     height: 100%;
 }
 
 body {
     height: 100%;
-    font-family: 'Gill Sans';
-    font-weight: lighter;
+    font: {
+	family: 'Gill Sans';
+	weight: lighter;
+    }
 }
 
 #heading {
@@ -27,15 +44,22 @@ body {
 }
 
 h1 {
-    font-family: 'Baskerville';
-    font-style: italic;
+    font: {
+	family: 'Baskerville';
+	style: italic;
+	weight: normal;
+    }
 }
 
 h2 {
-    font-weight: normal;
-    font-size: 1em;
-    margin-top: -1em;
-    margin-left: 1.5em;
+    font: {
+	weight: 100;
+	size: 1em;
+    }
+    margin: {
+	top: -1em;
+	left: 1.5em;
+    }
 }
 
 #body {
@@ -43,12 +67,31 @@ h2 {
     height: 100%;
 }
 
-#where {
+#adding {
     float: right;
     margin-top: -50px;
+    width: 425px;
+    height: 25px;
+}
+
+#not-found {
+    display: none;
+    margin-top: -25px;
+    a {
+	text-align: right;
+    }
 }
 
 #world {
     height: 75%;
     margin: 1.2em;
+}
+
+input[type=button] {
+    @include button_style;
+}
+
+#twer form {
+    margin-top: -10px;
+    float: right;
 }

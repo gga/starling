@@ -2,19 +2,27 @@
 
 var geocoder;
 var map;
+var thoughtworkers = {};
 
-function createMarker(name, location, info_html) {
-    var info = new google.maps.InfoWindow({
-	content: info_html
-    });
-    var marker = new google.maps.Marker({
-	map: map,
-	position: location,
-	animation: google.maps.Animation.DROP,
-	title: name
-    });
-    google.maps.event.addListener(marker, 'click', function() {
-	info.open(map, marker);
+function reset() {
+    $("#where").slideDown();
+    $("#not-found").slideUp();
+}
+
+function createMarker(id, name, location, info_html) {
+    thoughtworkers[id] = {
+	info: new google.maps.InfoWindow({
+	    content: info_html
+	}),
+	marker: new google.maps.Marker({
+	    map: map,
+	    position: location,
+	    animation: google.maps.Animation.DROP,
+	    title: name
+	})
+    }
+    google.maps.event.addListener(thoughtworkers[id].marker, 'click', function() {
+	thoughtworkers[id].info.open(map, thoughtworkers[id].marker);
     });
 }
 
@@ -35,7 +43,8 @@ $(document).ready(function() {
 	    setTimeout(function() {
 		var place = new google.maps.LatLng(all_twers[loading_twers].latitude,
 						   all_twers[loading_twers].longitude);
-		createMarker(all_twers[loading_twers].name,
+		createMarker(all_twers[loading_twers].id,
+			     all_twers[loading_twers].name,
 			     place,
 			     all_twers[loading_twers].html);
 		++loading_twers;
@@ -55,11 +64,24 @@ function addBirthplace() {
 		human_address: birthplace,
 		latitude: results[0].geometry.location.lat(),
 		longitude: results[0].geometry.location.lng()
-	    }, function(nested) {
-		createMarker(thoughtworker, results[0].geometry.location, nested);
+	    }, function(twer) {
+		var place = new google.maps.LatLng(twer.latitude,
+						   twer.longitude);
+		createMarker(twer.id,
+			     twer.name,
+			     place,
+			     twer.html);
 	    });
 	} else {
-	    alert("Geocode not successful for " + birthplace + ". Status: " + status);
+	    $("#bad-loc").html(birthplace);
+	    $("#not-found").slideDown();
+	    $("#where").slideUp();
 	}
     });
+}
+
+function deleteBirthplace(twer_id) {
+    $.post("/twer/" + twer_id, $("#delete-" + twer_id).serialize());
+    thoughtworkers[twer_id].marker.setMap(null);
+    thoughtworkers[twer_id] = null;
 }
