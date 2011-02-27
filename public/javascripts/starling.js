@@ -33,6 +33,7 @@ $(document).ready(function() {
     var options = {
         zoom: 2,
         center: chicago,
+	minZoom: 1,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     map = new google.maps.Map(document.getElementById("world"), options);
