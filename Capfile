@@ -25,6 +25,13 @@ after 'deploy:update' do
   run "cd #{current_path} && /home/giles_a/.gems/bin/bundle install --deployment --local --without='test development'"
 end
 
-after :deploy do
-  run "touch #{current_path}/tmp/restart.txt"
+before 'deploy:restart' do
+  run "rm #{current_path}/db/starling.db"
+  run "ln -s /home/giles_a/db/starling.db #{current_path}/db/starling.db"
+end
+
+namespace :deploy do
+  task :restart do
+    run "touch #{current_path}/tmp/restart.txt"
+  end
 end
