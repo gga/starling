@@ -50,7 +50,7 @@ $(document).ready(function() {
 			     place,
 			     all_twers[loading_twers].html);
 		++loading_twers;
-	    }, i * 200);
+	    }, i * 10);
 	}
     });
 });
