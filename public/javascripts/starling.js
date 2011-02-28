@@ -2,6 +2,7 @@
 
 var geocoder;
 var map;
+var marker_clusters;
 var thoughtworkers = {};
 
 function reset() {
@@ -16,7 +17,6 @@ function createMarker(id, name, location, info_html) {
 	    content: info_html
 	}),
 	marker: new google.maps.Marker({
-	    map: map,
 	    position: location,
 	    animation: google.maps.Animation.DROP,
 	    title: name
@@ -25,9 +25,9 @@ function createMarker(id, name, location, info_html) {
     google.maps.event.addListener(thoughtworkers[id].marker, 'click', function() {
 	thoughtworkers[id].info.open(map, thoughtworkers[id].marker);
     });
+    return thoughtworkers[id];
 }
 
-var loading_twers = 0;
 $(document).ready(function() {
     geocoder = new google.maps.Geocoder();
     var chicago = new google.maps.LatLng(41.85, -87.65);
@@ -38,20 +38,23 @@ $(document).ready(function() {
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     map = new google.maps.Map(document.getElementById("world"), options);
+    marker_clusters = new MarkerClusterer(map,
+					  {
+					      gridSize: 80
+					  });
 
     $.get("/twer", function(all_twers) {
 	var i;
+	var all = [];
 	for (i = 0; i < all_twers.length; i += 1) {
-	    setTimeout(function() {
-		var place = new google.maps.LatLng(all_twers[loading_twers].latitude,
-						   all_twers[loading_twers].longitude);
-		createMarker(all_twers[loading_twers].id,
-			     all_twers[loading_twers].name,
-			     place,
-			     all_twers[loading_twers].html);
-		++loading_twers;
-	    }, i * 10);
+	    var place = new google.maps.LatLng(all_twers[i].latitude,
+					       all_twers[i].longitude);
+	    all.push(createMarker(all_twers[i].id,
+				  all_twers[i].name,
+				  place,
+				  all_twers[i].html).marker);
 	}
+	marker_clusters.addMarkers(all);
     });
 });
 
@@ -71,10 +74,11 @@ function addBirthplace() {
 		   function(twer) {
 		       var place = new google.maps.LatLng(twer.latitude,
 							  twer.longitude);
-		       createMarker(twer.id,
-				    twer.name,
-				    place,
-				    twer.html);
+		       var marker = createMarker(twer.id,
+						 twer.name,
+						 place,
+						 twer.html).marker;
+		       marker_clusters.addMarker(marker);
 		   }).error(function() {
 		       $("#bad-request").slideDown();
 		       $("#where").slideUp();
@@ -89,6 +93,7 @@ function addBirthplace() {
 
 function deleteBirthplace(twer_id) {
     $.post("/twer/" + twer_id, $("#delete-" + twer_id).serialize());
+    marker_clusters.removeMarker(thoughtworkers[twer_id].marker);
     thoughtworkers[twer_id].marker.setMap(null);
     thoughtworkers[twer_id] = null;
 }

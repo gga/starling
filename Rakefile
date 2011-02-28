@@ -17,6 +17,6 @@ end
 task :load => :environment do
   starting = ThoughtWorker.all
   (1500 / starting.length).to_i.times do
-    starting.each { |s| ThoughtWorker.create!(s.attributes) }
+    starting.each { |s| ThoughtWorker.create!(s.attributes.merge(:latitude => rand(360) - 180, :longitude => rand(360) - 180)) }
   end
 end
