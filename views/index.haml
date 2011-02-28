@@ -16,7 +16,7 @@
       #adding
         #where
           %form#nesting{ :method => 'post', :action => 'nest' }
-            %div{ :style => "float: left; " }
+            #fields
               %div
                 %label{ :for => "name" }Name:
                 %input#name{ :type => 'text', :name => 'name' }
@@ -34,7 +34,7 @@
                   %option{ :value => 'India' }India
                   %option{ :value => 'UK' }UK
                   %option{ :value => 'USA' }USA
-            %div{ :style => "float: right; margin-top: 20px;" }
+            #controls
               %input{ :type=> 'button', :onclick => 'addBirthplace()', :value => 'Pin Me!' }
         #not-found
           %p

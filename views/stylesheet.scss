@@ -70,7 +70,8 @@ h2 {
 #adding {
     float: right;
     margin-top: -50px;
-    width: 500px;
+    vertical-align: center;
+    width: 550px;
     height: 25px;
 }
 
@@ -79,6 +80,16 @@ h2 {
     select {
 	width: 165px;
     }
+}
+
+form#nesting #fields {
+    float: left;
+    padding-right: 0.5em;
+}
+
+form#nesting #controls {
+    vertical-align: center;
+    padding: 0.7em;
 }
 
 input[name=birthplace] {
