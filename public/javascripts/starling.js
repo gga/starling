@@ -57,6 +57,18 @@ $(document).ready(function() {
 	}
 	marker_clusters.addMarkers(all);
     });
+
+    if (!WebKitDetect.isWebKit()) {
+	$("#birthplace").val("Town, Country");
+	$("#birthplace").focus(function() {
+	    if (this.value == "Town, Country")
+		this.value = "";
+	});
+	$("#birthplace").blur(function() {
+	    if (this.value == "")
+		this.value = "Town, Country";
+	});
+    }
 });
 
 function addBirthplace() {
