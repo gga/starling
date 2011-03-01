@@ -9,6 +9,7 @@ function reset() {
     $("#where").slideDown();
     $("#not-found").slideUp();
     $("#bad-request").slideUp();
+    $("#thanks").slideUp();
 }
 
 function createMarker(id, name, location, info_html) {
@@ -79,6 +80,8 @@ function addBirthplace() {
 						 place,
 						 twer.html).marker;
 		       marker_clusters.addMarker(marker);
+		       $("#thanks").slideDown();
+		       $("#where").slideUp();
 		   }).error(function() {
 		       $("#bad-request").slideDown();
 		       $("#where").slideUp();

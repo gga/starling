@@ -36,6 +36,11 @@
                   %option{ :value => 'USA' }USA
             #controls
               %input{ :type=> 'button', :onclick => 'addBirthplace()', :value => 'Pin Me!' }
+        #thanks
+          %p
+            Thanks for telling us where you nested.
+            %a{ :href => "#", :onclick => "javascript:reset();" }
+              No worries.
         #not-found
           %p
             Couldn't find
