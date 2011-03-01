@@ -1,5 +1,6 @@
 load 'deploy' if respond_to?(:namespace) # cap2 differentiator
 
+require 'date'
 require 'fileutils'
 
 default_run_options[:pty] = true
@@ -35,4 +36,9 @@ namespace :deploy do
   task :restart do
     run "touch #{current_path}/tmp/restart.txt"
   end
+end
+
+task :backup do
+  FileUtils::mkdir_p "backups"
+  system("scp #{user}@#{domain}:/home/giles_a/db/starling.db backups/starling_#{DateTime.now.strftime("%Y-%m-%d")}.db")
 end
