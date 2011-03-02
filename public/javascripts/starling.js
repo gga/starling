@@ -29,6 +29,20 @@ function createMarker(id, name, location, info_html) {
     return thoughtworkers[id];
 }
 
+function simulatePlaceholder(element, text) {
+    if (!WebKitDetect.isWebKit()) {
+	element.val(text);
+	element.focus(function() {
+	    if (this.value == text)
+		this.value = "";
+	});
+	element.blur(function() {
+	    if (this.value == "")
+		this.value = text;
+	});
+    }
+}
+
 $(document).ready(function() {
     geocoder = new google.maps.Geocoder();
     var chicago = new google.maps.LatLng(41.85, -87.65);
@@ -57,18 +71,8 @@ $(document).ready(function() {
 	}
 	marker_clusters.addMarkers(all);
     });
-
-    if (!WebKitDetect.isWebKit()) {
-	$("#birthplace").val("Town, Country");
-	$("#birthplace").focus(function() {
-	    if (this.value == "Town, Country")
-		this.value = "";
-	});
-	$("#birthplace").blur(function() {
-	    if (this.value == "")
-		this.value = "Town, Country";
-	});
-    }
+    simulatePlaceholder($("#birthplace"), "Town, Country");
+    simulatePlaceholder($("#name"), "First Last");
 });
 
 function addBirthplace() {
