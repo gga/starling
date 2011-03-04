@@ -9,7 +9,7 @@ require 'lib/thoughtworker'
 
 configure do
   LOGGER = Logger.new("sinatra.log") 
-  init
+  init settings.environment
 end
  
 helpers do

@@ -31,6 +31,8 @@ GEM
     net-ssh-gateway (1.0.1)
       net-ssh (>= 1.99.1)
     rack (1.2.1)
+    rack-test (0.5.7)
+      rack (>= 1.0)
     rake (0.8.7)
     rspec (2.5.0)
       rspec-core (~> 2.5.0)
@@ -54,6 +56,7 @@ DEPENDENCIES
   activerecord
   capistrano
   haml
+  rack-test
   rake (= 0.8.7)
   rspec
   sinatra

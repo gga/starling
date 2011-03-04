@@ -28,8 +28,8 @@ end
 
 before 'deploy:restart' do
   run "rm #{current_path}/db/starling.db"
-  run "ln -s /home/giles_a/db/starling.db #{current_path}/db/starling.db"
-  run "cd #{current_path} && /home/giles_a/.gems/bin/bundle exec rake db"
+  run "ln -s /home/giles_a/db/starling.db #{current_path}/db/starling.production.db"
+  run "cd #{current_path} && RACK_ENV=production /home/giles_a/.gems/bin/bundle exec rake db"
 end
 
 namespace :deploy do
