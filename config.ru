@@ -7,11 +7,9 @@ require 'bundler'
 
 Bundler.require
 
-require 'sinatra'
-
 set :run, false
 set :environment, :production
 
 require 'starling'
 
-run Sinatra::Application
+run Starling

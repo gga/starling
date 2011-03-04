@@ -31,6 +31,11 @@ task :db => :environment do
   ActiveRecord::Migrator.migrate("db/migrations")
 end
 
+desc "Runs locally"
+task :local => :db do
+  sh "rackup -p 4567 --env development"
+end
+
 desc "Deploys the application with Capistrano"
 task :deploy do
   sh "cap backup"
