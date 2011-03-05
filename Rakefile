@@ -1,10 +1,25 @@
-require 'rspec/core/rake_task'
+begin
+  require 'rspec/core/rake_task'
+  require 'cucumber'
+  require 'cucumber/rake/task'
 
-RSpec::Core::RakeTask.new(:spec) do |t|
-  t.rspec_opts = "--color"
+  RSpec::Core::RakeTask.new(:spec) do |t|
+    t.rspec_opts = "--color"
+  end
+
+  Cucumber::Rake::Task.new(:features) do |t|
+    t.cucumber_opts = "features --format pretty"
+  end
+
+rescue LoadError
+  desc "Specs not available"
+  task :spec
+
+  desc "Features not available"
+  task :features
 end
 
-namespace :spec do
+namespace :testing do
   task :prepare do
     ENV['RACK_ENV'] = 'test'
   end
@@ -13,7 +28,8 @@ namespace :spec do
     rm_rf 'db/starling.test.db'
   end
 end
-task :spec => ['spec:prepare', 'spec:db_clean', :db]
+task :spec => ['testing:prepare', 'testing:db_clean', :db]
+task :features => ['testing:prepare', 'testing:db_clean', :db]
 
 task :environment do
   require 'sinatra'

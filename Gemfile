@@ -15,5 +15,8 @@ group :test do
   gem "rspec"
   gem "machinist"
   gem "faker"
-  gem "json"
+  gem "json", "~> 1.4.6"
+  gem "cucumber", ">= 0.10"
+  gem "capybara"
+  gem "cucumber-sinatra"
 end
