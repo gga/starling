@@ -1,25 +1,28 @@
-begin
-  require 'rspec/core/rake_task'
-  require 'cucumber'
-  require 'cucumber/rake/task'
-
-  RSpec::Core::RakeTask.new(:spec) do |t|
-    t.rspec_opts = "--color"
-  end
-
-  Cucumber::Rake::Task.new(:features) do |t|
-    t.cucumber_opts = "features --format pretty"
-  end
-
-rescue LoadError
-  desc "Specs not available"
-  task :spec
-
-  desc "Features not available"
-  task :features
-end
-
 namespace :testing do
+  begin
+    require 'rspec/core/rake_task'
+    require 'cucumber'
+    require 'cucumber/rake/task'
+    require 'jasmine'
+
+    RSpec::Core::RakeTask.new(:rspec) do |t|
+      t.rspec_opts = "--color"
+    end
+
+    Cucumber::Rake::Task.new(:features) do |t|
+      t.cucumber_opts = "features --format pretty"
+    end
+
+    load 'jasmine/tasks/jasmine.rake'
+
+  rescue LoadError
+    desc "Specs not available"
+    task :spec
+
+    desc "Features not available"
+    task :features
+  end
+
   task :prepare do
     ENV['RACK_ENV'] = 'test'
   end
@@ -28,8 +31,12 @@ namespace :testing do
     rm_rf 'db/starling.test.db'
   end
 end
-task :spec => ['testing:prepare', 'testing:db_clean', :db]
-task :features => ['testing:prepare', 'testing:db_clean', :db]
+task :spec => ['testing:prepare', 'testing:db_clean', :db, 'testing:rspec']
+task :features => ['testing:prepare', 'testing:db_clean', :db, 'testing:features']
+task :jspec => 'testing:jasmine:ci'
+
+desc "Run all tests across the application"
+task :verify => [:spec, :jspec, :features]
 
 task :environment do
   require 'sinatra'

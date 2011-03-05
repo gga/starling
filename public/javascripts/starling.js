@@ -1,118 +1,249 @@
 ;
 
-var geocoder;
-var map;
-var marker_clusters;
-var thoughtworkers = {};
+var overwatering = {
+  starling: {
+    world: {
+      twers: [],
+    },
+    googleMaps: {
+      geocoder: null,
+      map: null,
+      clusters: null
+    },
+    backend: {},
+    repository: {}
+  }
+};
+
+overwatering.starling.googleMaps.initialize = function(startLatLng, target) {
+  this.geocoder = new google.maps.Geocoder();
+  this.map = new google.maps.Map(target, {
+    zoom: 2,
+    center: new google.maps.LatLng(startLatLng[0], startLatLng[1]),
+    minZoom: 1,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+  this.clusters = new MarkerClusterer(this.map, {
+    gridSize: 80
+  });
+};
+
+overwatering.starling.googleMaps.geocode = function(searchAddress, callbacks) {
+  this.geocoder.geocode( { address: searchAddress }, function(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+      callbacks.success(results[0].geometry.location);
+    } else {
+      callbacks.failure();
+    }
+  });
+};
+
+overwatering.starling.googleMaps.marker = function(name, infoText, lat, lng) {
+  var markerInfo = {
+    info: new google.maps.InfoWindow({
+      content: infoText
+    }),
+    marker: new google.maps.Marker({
+      position: new google.maps.LatLng(lat, lng),
+      animation: google.maps.Animation.DROP,
+      title: name
+    })
+  };
+  google.maps.event.addListener(markerInfo.marker, 'click', function() {
+    markerInfo.info.open(this.map, markerInfo.marker);
+  });
+  return markerInfo;
+};
+
+overwatering.starling.googleMaps.cluster = function(markers) {
+  this.clusters.addMarkers(markers);
+};
+
+overwatering.starling.googleMaps.decluster = function(marker) {
+  this.clusters.removeMarker(marker);
+};
+
+overwatering.starling.googleMaps.demap = function(markerInfo) {
+  markerInfo.marker.setMap(null);
+};
+
+overwatering.starling.backend.post = function(path, data, callbacks) {
+  $.post(path, data, function(value) {
+    callbacks.success(value);
+  }).error(function() {
+    callbacks.failure();
+  });
+};
+
+overwatering.starling.backend.get = function(path, callbacks) {
+  $.get(path, function(value) {
+    callbacks.success(value);
+  }).error(function() {
+    callbacks.failure();
+  });
+};
+
+overwatering.starling.ThoughtWorker = function() {
+};
+
+overwatering.starling.ThoughtWorker.prototype.populateCore = function(coreData) {
+  this.id = coreData.id;
+  this.name = coreData.name;
+  this.latLng = [coreData.latitude, coreData.longitude];
+  this.info = coreData.html;
+  return this;
+};
+
+overwatering.starling.ThoughtWorker.prototype.resolve = function(geocoder, callbacks) {
+  var that = this;
+  geocoder.geocode(this.human_address, {
+    success: function(location) {
+      that.latLng = [location.lat(), location.lng()];
+      callbacks.success();
+    },
+    failure: function() {
+      callbacks.failure();
+    }
+  });
+};
+
+overwatering.starling.repository.save = function(twer, callbacks) {
+  overwatering.starling.backend.post('/nest', {
+    name: twer.name,
+    human_address: twer.human_address,
+    latitude: twer.latLng[0],
+    longitude: twer.latLng[1],
+    country: twer.country
+  }, {
+    success: function(value) {
+      twer.id = value.id;
+      twer.info = value.html;
+      callbacks.success();
+    },
+    failure: function() {
+      callbacks.failure();
+    }
+  });
+};
+
+overwatering.starling.repository.load = function(twer_id, callbacks) {
+  overwatering.starling.backend.get('/twer/' + twer_id, {
+    success: function(value) {
+      var twer = new overwatering.starling.ThoughtWorker();
+      callbacks.success(twer.populateCore(value));
+    },
+    failure: function() {
+      callbacks.failure();
+    }
+  });
+};
+
+overwatering.starling.repository.loadAll = function(callbacks) {
+  overwatering.starling.backend.get("/twer", {
+    success: function(all_twers) {
+      var all = [];
+      for (i = 0; i < all_twers.length; i += 1) {
+	var twer = new overwatering.starling.ThoughtWorker();
+	all.push(twer.populateCore(all_twers[i]));
+      }
+      callbacks.success(all);
+    },
+    failure: function() {
+      callbacks.failure();
+    }
+  });
+};
+
+overwatering.starling.world.create = function(target) {
+  var chicago = [41.85, -87.65];
+  overwatering.starling.googleMaps.initialize(chicago, target);
+};
+
+overwatering.starling.world.add = function(twer) {
+  this.twers[twer.id] = twer;
+  twer.markerInfo = overwatering.starling.googleMaps.marker(twer.name,
+							    twer.info,
+							    twer.latLng[0],
+							    twer.latLng[1]);
+  overwatering.starling.googleMaps.cluster([twer.markerInfo.marker]);
+};
+
+overwatering.starling.world.remove = function(twer_id) {
+  overwatering.starling.googleMaps.decluster(this.twers[twer_id].marker);
+  overwatering.starling.googleMaps.demap(this.twers[twer_id].markerInfo);
+  this.twers[twer_id] = null;
+};
+
+// *****************************************************************************************
+// *****************************************************************************************
+// *****************************************************************************************
 
 function reset() {
-    $("#where").slideDown();
-    $("#not-found").slideUp();
-    $("#bad-request").slideUp();
-    $("#thanks").slideUp();
-}
-
-function createMarker(id, name, location, info_html) {
-    thoughtworkers[id] = {
-	info: new google.maps.InfoWindow({
-	    content: info_html
-	}),
-	marker: new google.maps.Marker({
-	    position: location,
-	    animation: google.maps.Animation.DROP,
-	    title: name
-	})
-    }
-    google.maps.event.addListener(thoughtworkers[id].marker, 'click', function() {
-	thoughtworkers[id].info.open(map, thoughtworkers[id].marker);
-    });
-    return thoughtworkers[id];
+  $("#where").slideDown();
+  $("#not-found").slideUp();
+  $("#bad-request").slideUp();
+  $("#thanks").slideUp();
 }
 
 function simulatePlaceholder(element, text) {
-    if (!WebKitDetect.isWebKit()) {
-	element.val(text);
-	element.focus(function() {
-	    if (this.value == text)
-		this.value = "";
-	});
-	element.blur(function() {
-	    if (this.value == "")
-		this.value = text;
-	});
-    }
+  if (!WebKitDetect.isWebKit()) {
+    element.val(text);
+    element.focus(function() {
+      if (this.value == text)
+	this.value = "";
+    });
+    element.blur(function() {
+      if (this.value == "")
+	this.value = text;
+    });
+  }
 }
 
 $(document).ready(function() {
-    geocoder = new google.maps.Geocoder();
-    var chicago = new google.maps.LatLng(41.85, -87.65);
-    var options = {
-        zoom: 2,
-        center: chicago,
-	minZoom: 1,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    map = new google.maps.Map(document.getElementById("world"), options);
-    marker_clusters = new MarkerClusterer(map,
-					  {
-					      gridSize: 80
-					  });
-
-    $.get("/twer", function(all_twers) {
-	var i;
-	var all = [];
-	for (i = 0; i < all_twers.length; i += 1) {
-	    var place = new google.maps.LatLng(all_twers[i].latitude,
-					       all_twers[i].longitude);
-	    all.push(createMarker(all_twers[i].id,
-				  all_twers[i].name,
-				  place,
-				  all_twers[i].html).marker);
-	}
-	marker_clusters.addMarkers(all);
-    });
-    simulatePlaceholder($("#birthplace"), "Town, Country");
-    simulatePlaceholder($("#name"), "First Last");
+  overwatering.starling.world.create(document.getElementById("world"));
+  overwatering.starling.repository.loadAll({
+    success: function(all) {
+      for (i = 0; i < all.length; ++i) {
+  	overwatering.starling.world.add(all[i]);
+      }
+    },
+    failure: function() {}
+  });
+  
+  simulatePlaceholder($("#birthplace"), "Town, Country");
+  simulatePlaceholder($("#name"), "First Last");
 });
 
 function addBirthplace() {
-    var birthplace = $("#birthplace").val();
-
-    geocoder.geocode( { address: birthplace }, function(results, status) {
-	if (status == google.maps.GeocoderStatus.OK) {
-	    $.post("/nest",
-		   {
-		       name: $("#name").val(),
-		       human_address: birthplace,
-		       latitude: results[0].geometry.location.lat(),
-		       longitude: results[0].geometry.location.lng(),
-		       country: $("#country option:selected").val()
-		   },
-		   function(twer) {
-		       var place = new google.maps.LatLng(twer.latitude,
-							  twer.longitude);
-		       var marker = createMarker(twer.id,
-						 twer.name,
-						 place,
-						 twer.html).marker;
-		       marker_clusters.addMarker(marker);
-		       $("#thanks").slideDown();
-		       $("#where").slideUp();
-		   }).error(function() {
-		       $("#bad-request").slideDown();
-		       $("#where").slideUp();
-		   });
-	} else {
-	    $("#bad-loc").html(birthplace);
-	    $("#not-found").slideDown();
-	    $("#where").slideUp();
+  var birthplace = $("#birthplace").val();
+  var twer = new overwatering.starling.ThoughtWorker();
+  twer.name = $("#name").val();
+  twer.human_address = $("#birthplace").val();
+  twer.country = $("#country option:selected").val();
+  
+  twer.resolve(overwatering.starling.googleMaps, {
+    success: function() {
+      overwatering.starling.repository.save(twer, {
+	success: function() {
+	  overwatering.starling.world.add(twer);
+	  $("#thanks").slideDown();
+	  $("#where").slideUp();
+	},
+	failure: function() {
+	  $("#bad-request").slideDown();
+	  $("#where").slideUp();
 	}
-    });
+      });
+    },
+    failure: function() {
+      $("#bad-loc").html(twer.human_address);
+      $("#not-found").slideDown();
+      $("#where").slideUp();
+    }
+  });
 }
 
 function deleteBirthplace(twer_id) {
-    $.post("/twer/" + twer_id, $("#delete-" + twer_id).serialize());
-    marker_clusters.removeMarker(thoughtworkers[twer_id].marker);
-    thoughtworkers[twer_id].marker.setMap(null);
-    thoughtworkers[twer_id] = null;
+  $.post("/twer/" + twer_id, $("#delete-" + twer_id).serialize());
+  overwatering.starling.world.remove(twer_id);
 }
