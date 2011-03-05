@@ -1,9 +1,5 @@
 require 'rspec/core/rake_task'
 
-RSpec::Core::RakeTask.new(:spec) do |t|
-  t.rspec_opts = "--color"
-end
-
 namespace :spec do
   task :prepare do
     ENV['RACK_ENV'] = 'test'
@@ -12,8 +8,20 @@ namespace :spec do
   task :db_clean do
     rm_rf 'db/starling.test.db'
   end
+
+  RSpec::Core::RakeTask.new(:rspec) do |t|
+    t.rspec_opts = "--color"
+  end
+  task :rspec => ['spec:prepare', 'spec:db_clean', :db]
+
+  desc "Run JSpec code examples"
+  task :jspec do
+    sh "jspec run --rhino"
+  end
 end
-task :spec => ['spec:prepare', 'spec:db_clean', :db]
+
+desc "Run all specs"
+task :spec => ['spec:rspec', 'spec:jspec']
 
 task :environment do
   require 'sinatra'
