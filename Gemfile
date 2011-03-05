@@ -16,5 +16,4 @@ group :test do
   gem "machinist"
   gem "faker"
   gem "json"
-  gem "jspec"
 end
