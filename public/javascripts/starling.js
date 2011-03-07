@@ -15,7 +15,7 @@ var overwatering = {
   }
 };
 
-overwatering.starling.googleMaps.initialize = function(startLatLng, target) {
+overwatering.starling.googleMaps.initialize = function(startLatLng, target, clusterClick) {
   this.geocoder = new google.maps.Geocoder();
   this.map = new google.maps.Map(target, {
     zoom: 2,
@@ -26,6 +26,7 @@ overwatering.starling.googleMaps.initialize = function(startLatLng, target) {
   this.clusters = new MarkerClusterer(this.map, {
     gridSize: 80
   });
+  google.maps.event.addListener(this.clusters, 'clusterclick', clusterClick);
 };
 
 overwatering.starling.googleMaps.geocode = function(searchAddress, callbacks) {
@@ -66,6 +67,14 @@ overwatering.starling.googleMaps.decluster = function(marker) {
 overwatering.starling.googleMaps.demap = function(markerInfo) {
   markerInfo.marker.setMap(null);
 };
+
+overwatering.starling.googleMaps.displayInfo = function(info, center) {
+  var clusterInfo = new google.maps.InfoWindow({
+    content: info,
+    position: center
+  });
+  clusterInfo.open(this.map);
+}
 
 overwatering.starling.backend.post = function(path, data, callbacks) {
   $.post(path, data, function(value) {
@@ -156,7 +165,19 @@ overwatering.starling.repository.loadAll = function(callbacks) {
 
 overwatering.starling.world.create = function(target) {
   var chicago = [41.85, -87.65];
-  overwatering.starling.googleMaps.initialize(chicago, target);
+  overwatering.starling.googleMaps.initialize(chicago,
+					      target,
+					      overwatering.starling.world.displayAnOpinion);
+};
+
+overwatering.starling.world.displayAnOpinion = function(cluster) {
+  if (cluster.getSize() <= 10) {
+    var thoughtworkers = [];
+    for (i = 0; i < cluster.getMarkers().length; ++i)
+      thoughtworkers.push(cluster.getMarkers()[i].twerId);
+    var infoHtml = overwatering.starling.world.infoSet(thoughtworkers);
+    overwatering.starling.googleMaps.displayInfo(infoHtml, cluster.getCenter());
+  }
 };
 
 overwatering.starling.world.add = function(twer) {
@@ -165,7 +186,17 @@ overwatering.starling.world.add = function(twer) {
 							    twer.info,
 							    twer.latLng[0],
 							    twer.latLng[1]);
+  twer.markerInfo.marker.twerId = twer.id;
   overwatering.starling.googleMaps.cluster([twer.markerInfo.marker]);
+};
+
+overwatering.starling.world.infoSet = function(ids) {
+  var info = "<div id='twer-set'>";
+  for (i = 0; i < ids.length; ++i) {
+    if (this.twers[ids[i]])
+      info += this.twers[ids[i]].info;
+  }
+  return info + "</div>";
 };
 
 overwatering.starling.world.remove = function(twer_id) {

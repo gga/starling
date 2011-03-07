@@ -10,8 +10,8 @@ describe("overwatering.starling.ThoughtWorker", function() {
       results: null,
       succeed: null,
       geocode: function(query, callbacks) {
-    	this.query = query;
-    	this.succeed ? callbacks.success(this.results) : callbacks.failure();
+        this.query = query;
+        this.succeed ? callbacks.success(this.results) : callbacks.failure();
       }
     };
     twer = new overwatering.starling.ThoughtWorker();
@@ -90,11 +90,11 @@ describe("overwatering.starling.Repository", function() {
       expect(overwatering.starling.backend.post).toHaveBeenCalled();
       expect(overwatering.starling.backend.post.mostRecentCall.args[0]).toEqual('/nest');
       expect(overwatering.starling.backend.post.mostRecentCall.args[1]).
-	toEqual({ name: twer.name,
-    		  human_address: twer.human_address,
-    		  latitude: twer.latLng[0],
-    		  longitude: twer.latLng[1],
-    		  country: twer.country });
+        toEqual({ name: twer.name,
+                  human_address: twer.human_address,
+                  latitude: twer.latLng[0],
+                  longitude: twer.latLng[1],
+                  country: twer.country });
 
       overwatering.starling.backend.post.mostRecentCall.args[2].success({ id: 15, html: "info html" });
       expect(twer.id).toEqual(15);
@@ -125,15 +125,15 @@ describe("overwatering.starling.Repository", function() {
       expect(overwatering.starling.backend.get.mostRecentCall.args[0]).toEqual('/twer/42');
       
       overwatering.starling.backend.get.mostRecentCall.args[1].success({ id: 15,
-									 name: 'Giles',
-									 latitude: 45.9,
-									 longitude: 13.8,
-									 html: "some info"
-								       });
+                                                                         name: 'Giles',
+                                                                         latitude: 45.9,
+                                                                         longitude: 13.8,
+                                                                         html: "some info"
+                                                                       });
 
       var keys = ['id', 'name', 'latLng', 'info'];
       for (i = 0; i < keys.length; ++i) {
-	expect(succeeded.mostRecentCall.args[0][keys[i]]).toBeDefined();
+        expect(succeeded.mostRecentCall.args[0][keys[i]]).toBeDefined();
       }
     });
 
@@ -144,17 +144,17 @@ describe("overwatering.starling.Repository", function() {
       expect(overwatering.starling.backend.get.mostRecentCall.args[0]).toEqual('/twer');
 
       overwatering.starling.backend.get.mostRecentCall.args[1].success([{ id: 15,
-									 name: 'Giles',
-									 latitude: 45.9,
-									 longitude: 13.8,
-									 html: "some info"
-								       },
-								       { id: 15,
-									 name: 'Giles',
-									 latitude: 45.9,
-									 longitude: 13.8,
-									 html: "some info"
-								       }]);
+                                                                         name: 'Giles',
+                                                                         latitude: 45.9,
+                                                                         longitude: 13.8,
+                                                                         html: "some info"
+                                                                       },
+                                                                       { id: 15,
+                                                                         name: 'Giles',
+                                                                         latitude: 45.9,
+                                                                         longitude: 13.8,
+                                                                         html: "some info"
+                                                                       }]);
       expect(succeeded.mostRecentCall.args[0].length).toEqual(2);
     });
   });
@@ -164,32 +164,37 @@ describe("overwatering.starling.Repository", function() {
 describe("overwatering.starling.world", function() {
   var twer;
 
-  beforeEach(function() {
-    twer = new overwatering.starling.ThoughtWorker();
-    twer.id = 15;
+  function createThoughtWorker(id) {
+    var twer = new overwatering.starling.ThoughtWorker();
+    twer.id = id;
     twer.name = "Giles";
     twer.human_address = "Wellington, NZ";
     twer.country = "Australia";
     twer.latLng = [45, 34];
     twer.info = "info html";
+    return twer;
+  }
+
+  beforeEach(function() {
+    twer = createThoughtWorker(15);
   });
 
   it("should initialise the underlying world as required", function() {
     spyOn(overwatering.starling.googleMaps, 'initialize');
     overwatering.starling.world.create("target");
-    expect(overwatering.starling.googleMaps.initialize).toHaveBeenCalledWith([41.85, -87.65], "target");
+    expect(overwatering.starling.googleMaps.initialize).toHaveBeenCalled();
   });
 
   it("should create a marker at the right location", function() {
-    spyOn(overwatering.starling.googleMaps, 'marker').andReturn({ marker: "m", info: "i" });
+    spyOn(overwatering.starling.googleMaps, 'marker').andReturn({ marker: { name: "m" }, info: "i" });
     spyOn(overwatering.starling.googleMaps, 'cluster');
     overwatering.starling.world.add(twer);
     expect(overwatering.starling.googleMaps.marker).toHaveBeenCalledWith("Giles",
-									 "info html",
-									 45,
-									 34);
-    expect(twer.markerInfo).toEqual({ marker: "m", info: "i" });
-    expect(overwatering.starling.googleMaps.cluster).toHaveBeenCalledWith(["m"]);
+                                                                         "info html",
+                                                                         45,
+                                                                         34);
+    expect(twer.markerInfo.marker.twerId).toEqual(15);
+    expect(overwatering.starling.googleMaps.cluster).toHaveBeenCalled();
   });
   
   it("should remove all traces of a thouhtworker", function() {
@@ -198,6 +203,54 @@ describe("overwatering.starling.world", function() {
     overwatering.starling.world.remove(15);
     expect(overwatering.starling.googleMaps.decluster).toHaveBeenCalled();
     expect(overwatering.starling.googleMaps.demap).toHaveBeenCalled();
+  });
+
+  describe("info sets", function() {
+    beforeEach(function() {
+      spyOn(overwatering.starling.googleMaps, 'marker').andReturn({ marker: "m", info: "i" });
+      spyOn(overwatering.starling.googleMaps, 'cluster');
+      overwatering.starling.world.add(twer);
+      for (i = 1; i < 5; ++i) {
+        overwatering.starling.world.add(createThoughtWorker(twer.id + i));
+      }
+    });
+
+    it("should accumulate info for a set of TWers", function() {
+      var twSetInfo = overwatering.starling.world.infoSet([15, 17, 19]);
+      expect(twSetInfo).toMatch("<div id='twer-set'>.*info html.*info html.*info html.*<\/div>");
+    });
+
+    it("should display an info window for less than 10 ThoughtWorkers", function() {
+      var fakeCluster = {
+        getSize: function() { return 2; },
+        getMarkers: function() { return [ { twerId: 15 }, { twerId: 22 } ] },
+        getCenter: function() { return [45, 3]; }
+      };
+      spyOn(overwatering.starling.googleMaps, 'displayInfo');
+      overwatering.starling.world.displayAnOpinion(fakeCluster);
+      expect(overwatering.starling.googleMaps.displayInfo).toHaveBeenCalled();
+    });
+
+    it("should not display an info window for more than 10 ThoughtWorkers", function() {
+      var fakeCluster = {
+        getSize: function() { return 11; },
+        getMarkers: function() { return [ { twerId: 15 },
+                                   { twerId: 16 },
+                                   { twerId: 17 },
+                                   { twerId: 18 },
+                                   { twerId: 19 },
+                                   { twerId: 20 },
+                                   { twerId: 21 },
+                                   { twerId: 22 },
+                                   { twerId: 23 },
+                                   { twerId: 24 } ] },
+        getCenter: function() { return [45, 3]; }
+      };
+      spyOn(overwatering.starling.googleMaps, 'displayInfo');
+      overwatering.starling.world.displayAnOpinion(fakeCluster);
+      expect(overwatering.starling.googleMaps.displayInfo).not.toHaveBeenCalled();
+    });
+
   });
 
 });
