@@ -16,6 +16,7 @@ var overwatering = {
 };
 
 overwatering.starling.googleMaps.initialize = function(startLatLng, target, clusterClick) {
+  var that = this;
   this.geocoder = new google.maps.Geocoder();
   this.map = new google.maps.Map(target, {
     zoom: 2,
@@ -23,10 +24,15 @@ overwatering.starling.googleMaps.initialize = function(startLatLng, target, clus
     minZoom: 1,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
-  this.clusters = new MarkerClusterer(this.map, {
-    gridSize: 80
+  this.clusters = new MarkerClusterer(this.map, [], {
+    zoomOnClick: false
   });
-  google.maps.event.addListener(this.clusters, 'clusterclick', clusterClick);
+  google.maps.event.addListener(this.clusters, 'clusterclick', function(cluster) {
+    if (cluster.getSize() < 10)
+      clusterClick(cluster);
+    else
+      that.map.fitBounds(cluster.getBounds());
+  });
 };
 
 overwatering.starling.googleMaps.geocode = function(searchAddress, callbacks) {
