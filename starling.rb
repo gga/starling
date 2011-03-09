@@ -13,6 +13,7 @@ class Starling < Sinatra::Base
     LOGGER = Logger.new("sinatra.log") 
 
     set :public, File.dirname(__FILE__) + '/public'
+    enable :methodoverride
 
     init settings.environment
   end
