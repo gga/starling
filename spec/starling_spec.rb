@@ -110,5 +110,6 @@ describe 'starling' do
     offices.should have(1).office
     offices[0]["name"].should == "Wodonga"
     offices[0]["address"].should == "12 Main St"
+    offices[0]["html"].should == "rendering office"
   end
 end

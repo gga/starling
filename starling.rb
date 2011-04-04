@@ -33,6 +33,14 @@ class Starling < Sinatra::Base
         'html' => haml(:twer, :locals => { :twer => twer })
       }
     end
+
+    def office(o)
+      {
+        :name => o.name,
+        :address => o.address,
+        :html => haml(:office, :locals => { :office => o })
+      }
+    end
   end
 
   get '/' do
@@ -80,7 +88,7 @@ class Starling < Sinatra::Base
 
   get '/offices' do
     content_type :json
-    Office.all.collect { |o| { :name => o.name, :address => o.address } }.to_json
+    Office.all.collect { |o| office(o) }.to_json
   end
 
 end
