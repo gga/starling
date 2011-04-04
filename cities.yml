@@ -1,0 +1,63 @@
+- 
+  name: Chicago
+  address: 200 E Randolph St, Chicago, IL 60601-6501 USA
+-
+  name: San Francisco
+  address: 315 Montgomery Street, San Francisco, CA 94104 USA
+-
+  name: New York
+  address: 1515 Broadway, New York, NY 10036 USA
+-
+  name: Atlanta
+  address: 2002 Summit Blvd, Atlanta, GA 30319 USA
+-
+  name: Dallas
+  address: 15455 Dallas Parkway, Addison, TX 75001 USA
+-
+  name: Porto Alegre
+  address: Avenida Ipiranga, 6681 - prédio 99a - 14 andar - sala 1402 Porto Alegre - RS Partenon 90619 - 900, Brazil
+-
+  name: Calgary
+  address: 600 6th Ave SW, Calgary, Alberta Canada T2P 0S5
+-
+  name: Toronto
+  address: 1 Yonge Street, Toronto, ON, Canada, M5E 1W7
+-
+  name: Hamburg
+  address: Neuer Wall 80 (4. OG) D-20354 Hamburg Germany
+-
+  name: London
+  address: 168-173 High Holborn, London, WC1V 7AA UK
+-
+  name: Manchester
+  address: Chelford Road, Knutsford Cheshire, WA16 8QZ UK
+-
+  name: Brisbane
+  address: 320 Adelaide Street, Brisbane, QLD 4000, Australia
+-
+  name: Sydney
+  address: 51 Pitt St, Sydney NSW 2000 Australia
+-
+  name: Melbourne
+  address: 303 Collins Street, Melbourne, VIC 3000, Australia
+-
+  name: Perth
+  address: 44 St Georges Terrace, Perth, WA 6000, Australia
+-
+  name: Bangalore
+  address: Tower C, Corporate Block, Diamond District, Airport Road Bangalore - 560 008, India
+-
+  name: Bangalore II
+  address: 147/F, 8th Main Rd. 3rd Block, Koramangala Bangalore - 560 034, India
+-
+  name: Chennai
+  address: 33 A Developed Plots, Thiru Vi Ka Industrial Estate Ekkatuthangal, Guindy Chennai - 600 032, India
+-
+  name: Delhi
+  address: Tower B, DLF Golf Course Rd Sector 54, Gurgaon 122002 New Delhi, India
+-
+  name: Pune
+  address: Panchshil Tech Park, Yerwada Pune - 411006, India
+-
+  name: Beijing
+  address: GuoHua Plaza, No.3 Dongzhimen South Street, Dongcheng District Beijing, China, 100007
