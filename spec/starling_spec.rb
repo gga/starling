@@ -100,4 +100,15 @@ describe 'starling' do
     post '/nest', attributes
     last_response.status.should == 400
   end
+
+  it "should return the names and addresses for offices" do
+    Office.stub(:all).and_return([OpenStruct.new(:name => 'Wodonga', :address => '12 Main St')])
+    get '/offices'
+    last_response.should be_ok
+    last_response.content_type.should == "application/json"
+    offices = JSON.parse(last_response.body)
+    offices.should have(1).office
+    offices[0]["name"].should == "Wodonga"
+    offices[0]["address"].should == "12 Main St"
+  end
 end

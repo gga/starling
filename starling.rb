@@ -77,4 +77,9 @@ class Starling < Sinatra::Base
     end
   end
 
+  get '/offices' do
+    content_type :json
+    Office.all.collect { |o| { :name => o.name, :address => o.address } }.to_json
+  end
+
 end
