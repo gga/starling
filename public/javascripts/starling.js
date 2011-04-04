@@ -4,6 +4,7 @@ var overwatering = {
   starling: {
     world: {
       twers: [],
+      offices: []
     },
     googleMaps: {
       geocoder: null,
@@ -60,6 +61,10 @@ overwatering.starling.googleMaps.marker = function(name, infoText, lat, lng) {
     markerInfo.info.open(this.map, markerInfo.marker);
   });
   return markerInfo;
+};
+
+overwatering.starling.googleMaps.mark = function(marker) {
+  marker.setMap(this.map);
 };
 
 overwatering.starling.googleMaps.cluster = function(markers) {
@@ -169,11 +174,22 @@ overwatering.starling.repository.loadAll = function(callbacks) {
   });
 };
 
+overwatering.starling.repository.loadOffices = function(callbacks) {
+  overwatering.starling.backend.get("/offices", {
+    success: function(all_offices) {
+      callbacks.success(all_offices);
+    },
+    failure: function() {
+      callbacks.failure();
+    }
+  });
+};
+
 overwatering.starling.world.create = function(target) {
   var chicago = [41.85, -87.65];
   overwatering.starling.googleMaps.initialize(chicago,
-					      target,
-					      overwatering.starling.world.displayAnOpinion);
+                target,
+                overwatering.starling.world.displayAnOpinion);
 };
 
 overwatering.starling.world.displayAnOpinion = function(cluster) {
@@ -189,11 +205,22 @@ overwatering.starling.world.displayAnOpinion = function(cluster) {
 overwatering.starling.world.add = function(twer) {
   this.twers[twer.id] = twer;
   twer.markerInfo = overwatering.starling.googleMaps.marker(twer.name,
-							    twer.info,
-							    twer.latLng[0],
-							    twer.latLng[1]);
+                  twer.info,
+                  twer.latLng[0],
+                  twer.latLng[1]);
   twer.markerInfo.marker.twerId = twer.id;
   overwatering.starling.googleMaps.cluster([twer.markerInfo.marker]);
+};
+
+overwatering.starling.world.office = function(office) {
+  this.offices.push(office);
+  overwatering.starling.googleMaps.geocode(office.address, {
+    success: function(loc) {
+      office.markerInfo = overwatering.starling.googleMaps.marker(office.name, office.html, loc.lat(), loc.lng());
+      overwatering.starling.googleMaps.mark(office.markerInfo.marker);
+    },
+    failure: function() {}
+  });
 };
 
 overwatering.starling.world.infoSet = function(ids) {
@@ -241,12 +268,20 @@ $(document).ready(function() {
   overwatering.starling.repository.loadAll({
     success: function(all) {
       for (i = 0; i < all.length; ++i) {
-  	overwatering.starling.world.add(all[i]);
+	overwatering.starling.world.add(all[i]);
       }
     },
     failure: function() {}
   });
-  
+  overwatering.starling.repository.loadOffices({
+    success: function(all) {
+      for (i = 0; i < all.length; ++i) {
+	overwatering.starling.world.office(all[i]);
+      }
+    },
+    failure: function() {}
+  });
+
   simulatePlaceholder($("#birthplace"), "Town, Country");
   simulatePlaceholder($("#name"), "First Last");
 });
@@ -257,7 +292,7 @@ function addBirthplace() {
   twer.name = $("#name").val();
   twer.human_address = $("#birthplace").val();
   twer.country = $("#country option:selected").val();
-  
+
   twer.resolve(overwatering.starling.googleMaps, {
     success: function() {
       overwatering.starling.repository.save(twer, {

@@ -123,7 +123,7 @@ describe("overwatering.starling.Repository", function() {
       overwatering.starling.repository.load(42, { success: succeeded, failure: function() {} });
       expect(overwatering.starling.backend.get).toHaveBeenCalled();
       expect(overwatering.starling.backend.get.mostRecentCall.args[0]).toEqual('/twer/42');
-      
+
       overwatering.starling.backend.get.mostRecentCall.args[1].success({ id: 15,
                                                                          name: 'Giles',
                                                                          latitude: 45.9,
@@ -156,6 +156,12 @@ describe("overwatering.starling.Repository", function() {
                                                                          html: "some info"
                                                                        }]);
       expect(succeeded.mostRecentCall.args[0].length).toEqual(2);
+    });
+
+    it("should load all ThoughtWorks offices", function() {
+      overwatering.starling.repository.loadOffices({ success: function() {}, failure: function() {} });
+      expect(overwatering.starling.backend.get).toHaveBeenCalled();
+      expect(overwatering.starling.backend.get.mostRecentCall.args[0]).toEqual('/offices');
     });
   });
 
@@ -196,7 +202,7 @@ describe("overwatering.starling.world", function() {
     expect(twer.markerInfo.marker.twerId).toEqual(15);
     expect(overwatering.starling.googleMaps.cluster).toHaveBeenCalled();
   });
-  
+
   it("should remove all traces of a thouhtworker", function() {
     spyOn(overwatering.starling.googleMaps, 'decluster');
     spyOn(overwatering.starling.googleMaps, 'demap');
