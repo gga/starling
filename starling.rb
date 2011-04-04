@@ -6,6 +6,7 @@ require 'active_record'
 
 require 'lib/env'
 require 'lib/thoughtworker'
+require 'lib/office'
 
 class Starling < Sinatra::Base
 
