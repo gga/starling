@@ -95,6 +95,10 @@ In `lib/office.rb`:
     
     end
 
+In `starling.rb`, right after the final `require`:
+
+    require 'lib/office'
+
 In `starling.rb`, right before the final `end`:
 
       get '/offices' do
