@@ -75,8 +75,6 @@ In `spec/starling_spec.rb`, right before the final `end`:
         offices[0]["address"].should == "12 Main St"
       end
 
-Features:
-
 ## Story Implementation
 
 In `lib/office.rb`:
