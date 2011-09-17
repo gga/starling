@@ -3,11 +3,14 @@ source :gemcutter
 gem "rake", "0.8.7"
 gem "sinatra"
 gem "haml"
+gem "compass"
+gem "sqlite3", "~> 1.3.4"
 gem "sqlite3-ruby", "1.2.1"
 gem "activerecord"
 
 group :development do
   gem "capistrano"
+  gem "relish"
 end
 
 group :test do
