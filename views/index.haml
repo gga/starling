@@ -2,59 +2,62 @@
 %html
   %head
     %title= "Project Starling"
-    %link{ :type => "text/css", :href => "/stylesheet.css", :rel => "stylesheet" }
+    /%link{ :type => "text/css", :href => "/stylesheets/stylesheet.css", :rel => "stylesheet" }
+    %link(href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css")
+    %link(href="/stylesheets/print.css" media="print" rel="stylesheet" type="text/css")
+
     %script{ :type => "text/javascript", :src => "http://maps.google.com/maps/api/js?sensor=false" }
     %script{ :type => "text/javascript", :src => "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js" }
     %script{ :type => "text/javascript", :src => "/javascripts/jquery-1.5.1.min.js" }
     %script{ :type => "text/javascript", :src => "/javascripts/WebKitDetect.js" }
     %script{ :type => "text/javascript", :src => "/javascripts/starling.js" }
 
-  %body
-    #heading
-      #titles
-        %h1 project starling
-        %h2 Or, where in the world does ThoughtWorks come from?
-      #adding
-        #where
-          %form#nesting{ :method => 'post', :action => 'nest' }
-            #fields
-              %div
-                %label{ :for => "name" }Name:
-                %input#name{ :type => 'text', :placeholder => "First Last", :name => 'name' }
-                %label{ :for => "birthplace" }Born in town:
-                %input#birthplace{ :type => 'text', :placeholder => "Town, Country", :name => 'birthplace' }
+  %body.bp
+    #container
+      #heading
+        #titles
+          %h1 project starling
+          %h2 Or, where in the world does ThoughtWorks come from?
+        #adding
+          #where
+            %form#nesting.bp(method='post' action='nest')
+              #person
+                %label.name(for="name")Name:
+                %input#name(type='text' placeholder="First Last" name='name')
+                %label.birthplace(for="birthplace")Born in:
+                %input#birthplace(type='text' placeholder="Town, Country" name='birthplace')
               #country
-                %label{ :for => "country" }Working in:
-                %select{ :name => 'country' }
-                  %option{ :value => '' }---Select a country---
-                  %option{ :value => 'Australia' }Australia
-                  %option{ :value => 'Brazil' }Brazil
-                  %option{ :value => 'Canada' }Canada
-                  %option{ :value => 'China' }China
-                  %option{ :value => 'Germany' }Germany
-                  %option{ :value => 'India' }India
-                  %option{ :value => 'UK' }UK
-                  %option{ :value => 'USA' }USA
-            #controls
-              %input{ :type=> 'button', :onclick => 'addBirthplace()', :value => 'Pin Me!' }
-        #thanks
-          %p
-            Thanks for telling us where you nested.
-            %a{ :href => "#", :onclick => "javascript:reset();" }
-              No worries.
-        #not-found
-          %p
-            Couldn't find
-            %span#bad-loc
-            %br
-            %a{ :href => "#", :onclick => "javascript:reset();" }
-              Try again?
-        #bad-request
-          %p
-            Something went wrong. Did you fill in all the fields? Or have you already pinned yourself?
-            %br
-            %a{ :href => "#", :onclick => "javascript:reset();" }
-              Try again?
-    
-    #body
-      #world
+                %label.country(for="country")Working in:
+                %select#country(name='country')
+                  %option(value='')---Select a country---
+                  %option(value='Australia')Australia
+                  %option(value='Brazil')Brazil
+                  %option(value='Canada')Canada
+                  %option(value='China')China
+                  %option(value='Germany')Germany
+                  %option(value='India')India
+                  %option(value='UK')UK
+                  %option(value='USA')USA
+              #controls
+                %input(type='button' onclick='addBirthplace()' value='Pin Me!')
+          #thanks.hide
+            %p
+              Thanks for telling us where you nested.
+              %a{ :href => "#", :onclick => "javascript:reset();" }
+                No worries.
+          #not-found.hide
+            %p
+              Couldn't find
+              %span#bad-loc
+              %br
+              %a{ :href => "#", :onclick => "javascript:reset();" }
+                Try again?
+          #bad-request.hide
+            %p
+              Something went wrong. Did you fill in all the fields? Or have you already pinned yourself?
+              %br
+              %a{ :href => "#", :onclick => "javascript:reset();" }
+                Try again?
+
+      #body
+        #world

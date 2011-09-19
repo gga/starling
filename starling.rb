@@ -38,10 +38,6 @@ class Starling < Sinatra::Base
     haml :index
   end
 
-  get '/stylesheet.css' do
-    scss :stylesheet
-  end
-
   get '/twer' do
     content_type :json
     ThoughtWorker.all.collect { |twer| thoughtworker(twer) }.to_json

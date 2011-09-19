@@ -1,0 +1,48 @@
+// This configuration will only apply the
+// blueprint styles to pages with a body class of "bp"
+// This makes it easier to have pages without blueprint styles
+// when you're using a single/combined stylesheet.
+
+body.bp {
+  @include blueprint-typography(true);
+  @include blueprint-utilities;
+  @include blueprint-debug;
+  @include blueprint-interaction;
+
+  #container {
+    @include container;
+  }
+
+  #titles {
+    $titles-columns: floor($blueprint-grid-columns / 2) - 1;
+    @include column($titles-columns);
+  }
+
+  #adding {
+    $adding-columns: floor($blueprint-grid-columns / 2) + 1;
+    @include prepend-top(12px);
+    @include column($adding-columns, true);
+  }
+
+  font: {
+    weight: lighter;
+  }
+
+  h1 {
+    font: {
+      family: 'Baskerville';
+      style: italic;
+      weight: normal;
+    }
+  }
+  h2 {
+    font: {
+      size: 1.2em;
+      weight: lighter;
+    }
+    margin: {
+      top: -1em;
+      left: 1.5em;
+    }
+  }
+}

@@ -1,0 +1,55 @@
+// Only apply the blueprint form styles to forms with
+// a class of "bp". This makes it easier to style
+// forms from scratch if you need to.
+
+form.bp {
+  @include blueprint-form;
+
+  label {
+    @include blueprint-reset-typography;
+    text-align: right;
+  }
+
+  label.name {
+    @include column(2);
+    @include prepend-top(6px);
+  }
+  input#name {
+    @include column(4);
+  }
+
+  label.birthplace {
+    @include column(2);
+    @include prepend-top(6px);
+  }
+  input#birthplace {
+    @include column(4, true);
+  }
+
+  #country {
+    @include prepend(6);
+
+    label.country {
+      margin: {
+        left: 0.9em;
+        top: 0.25em;
+      }
+      @include column(2);
+    }
+    select#country {
+      @include column(4, true);
+    }
+  }
+
+  #controls {
+    @include column(2, true);
+    @include prepend(11);
+    @include prepend-top(0.25em);
+
+    input[type="button"] {
+      background-color: $tw_purple;
+      color: white;
+      @include border-radius();
+    }
+  }
+}
