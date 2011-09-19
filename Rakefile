@@ -54,13 +54,18 @@ task :db => :environment do
   ActiveRecord::Migrator.migrate("db/migrations")
 end
 
+desc "Compiles the SCSS to CSS to be served statically"
+task :css do
+  sh "compass compile . --sass-dir sass --css-dir public/stylesheets"
+end
+
 desc "Runs locally"
-task :local => :db do
+task :local => [:db, :css] do
   sh "rackup -p 4567 --env development"
 end
 
 desc "Deploys the application with Capistrano"
-task :deploy do
+task :deploy => :css do
   sh "cap backup"
   sh "cap deploy"
 end
@@ -70,4 +75,9 @@ task :load => :environment do
   (1500 / starting.length).to_i.times do
     starting.each { |s| ThoughtWorker.create!(s.attributes.merge(:latitude => rand(360) - 180, :longitude => rand(360) - 180)) }
   end
+end
+
+desc "Starts up watchr for starling"
+task :watchr do
+  system "watchr", "watchr.rb"
 end

@@ -11,6 +11,7 @@ gem "activerecord"
 group :development do
   gem "capistrano"
   gem "relish"
+  gem "watchr"
 end
 
 group :test do

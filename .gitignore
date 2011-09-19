@@ -1,3 +1,5 @@
 vendor/bundle
 backups
 sinatra.log
+/.sass-cache/
+/public/stylesheets/*.css
