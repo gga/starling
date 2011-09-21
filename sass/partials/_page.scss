@@ -56,4 +56,23 @@ body.bp {
       left: 1.5em;
     }
   }
+
+  #twer {
+    width: 250px;
+    h1 {
+      font: {
+	      family: 'Gill Sans';
+	      size: 0.9em;
+      }
+    }
+    h2 {
+      font-size: 0.825em;
+      margin-top: -0.5em;
+    }
+    form {
+      margin-top: -35px;
+      padding-right: 20px;
+      float: right;
+    }
+  }
 }

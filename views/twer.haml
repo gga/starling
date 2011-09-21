@@ -2,6 +2,6 @@
   %h1= twer.name
   %h2= twer.human_address
   %h2= "Working out of #{twer.country}"
-  %form{ :id => "delete-#{twer.id}", :method => 'post', :action => "/twer/#{twer.id}" }
-    %input{ :type => 'hidden', :name => '_method', :value => 'delete' }
-    %input{ :type => 'button', :onclick => "deleteBirthplace(#{twer.id})", :value => 'Remove' }
+  %form.bp(id="delete-#{twer.id}" method='post' action="/twer/#{twer.id}")
+    %input(type='hidden' name='_method' value='delete')
+    %input(type='button' onclick="deleteBirthplace(#{twer.id})" value='Remove')

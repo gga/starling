@@ -45,11 +45,11 @@ form.bp {
     @include column(2, true);
     @include prepend(11);
     @include prepend-top(0.25em);
+  }
 
-    input[type="button"] {
-      background-color: $tw_purple;
-      color: white;
-      @include border-radius();
-    }
+  input[type="button"] {
+    background-color: $tw_purple;
+    color: white;
+    @include border-radius();
   }
 }
