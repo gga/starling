@@ -6,7 +6,7 @@ gem "haml"
 gem "compass"
 gem "sqlite3", "~> 1.3.4"
 gem "sqlite3-ruby", "1.2.1"
-gem "activerecord"
+gem "activerecord", "2.3.8"
 
 group :development do
   gem "capistrano"

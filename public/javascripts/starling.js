@@ -3,7 +3,7 @@
 var overwatering = {
   starling: {
     world: {
-      twers: [],
+      twers: []
     },
     googleMaps: {
       geocoder: null,
@@ -28,16 +28,17 @@ overwatering.starling.googleMaps.initialize = function(startLatLng, target, clus
     zoomOnClick: false
   });
   google.maps.event.addListener(this.clusters, 'clusterclick', function(cluster) {
-    if (cluster.getSize() < 10)
+    if (cluster.getSize() < 10) {
       clusterClick(cluster);
-    else
+    } else {
       that.map.fitBounds(cluster.getBounds());
+    }
   });
 };
 
 overwatering.starling.googleMaps.geocode = function(searchAddress, callbacks) {
   this.geocoder.geocode( { address: searchAddress }, function(results, status) {
-    if (status == google.maps.GeocoderStatus.OK) {
+    if (status === google.maps.GeocoderStatus.OK) {
       callbacks.success(results[0].geometry.location);
     } else {
       callbacks.failure();
@@ -80,7 +81,7 @@ overwatering.starling.googleMaps.displayInfo = function(info, center) {
     position: center
   });
   clusterInfo.open(this.map);
-}
+};
 
 overwatering.starling.backend.post = function(path, data, callbacks) {
   $.post(path, data, function(value) {
@@ -158,8 +159,8 @@ overwatering.starling.repository.loadAll = function(callbacks) {
     success: function(all_twers) {
       var all = [];
       for (i = 0; i < all_twers.length; i += 1) {
-	var twer = new overwatering.starling.ThoughtWorker();
-	all.push(twer.populateCore(all_twers[i]));
+        var twer = new overwatering.starling.ThoughtWorker();
+        all.push(twer.populateCore(all_twers[i]));
       }
       callbacks.success(all);
     },
@@ -172,15 +173,16 @@ overwatering.starling.repository.loadAll = function(callbacks) {
 overwatering.starling.world.create = function(target) {
   var chicago = [41.85, -87.65];
   overwatering.starling.googleMaps.initialize(chicago,
-					      target,
-					      overwatering.starling.world.displayAnOpinion);
+                                              target,
+                                              overwatering.starling.world.displayAnOpinion);
 };
 
 overwatering.starling.world.displayAnOpinion = function(cluster) {
   if (cluster.getSize() <= 10) {
     var thoughtworkers = [];
-    for (i = 0; i < cluster.getMarkers().length; ++i)
+    for (i = 0; i < cluster.getMarkers().length; ++i) {
       thoughtworkers.push(cluster.getMarkers()[i].twerId);
+    }
     var infoHtml = overwatering.starling.world.infoSet(thoughtworkers);
     overwatering.starling.googleMaps.displayInfo(infoHtml, cluster.getCenter());
   }
@@ -189,9 +191,9 @@ overwatering.starling.world.displayAnOpinion = function(cluster) {
 overwatering.starling.world.add = function(twer) {
   this.twers[twer.id] = twer;
   twer.markerInfo = overwatering.starling.googleMaps.marker(twer.name,
-							    twer.info,
-							    twer.latLng[0],
-							    twer.latLng[1]);
+                                                            twer.info,
+                                                            twer.latLng[0],
+                                                            twer.latLng[1]);
   twer.markerInfo.marker.twerId = twer.id;
   overwatering.starling.googleMaps.cluster([twer.markerInfo.marker]);
 };
@@ -199,8 +201,9 @@ overwatering.starling.world.add = function(twer) {
 overwatering.starling.world.infoSet = function(ids) {
   var info = "<div id='twer-set'>";
   for (i = 0; i < ids.length; ++i) {
-    if (this.twers[ids[i]])
+    if (this.twers[ids[i]]) {
       info += this.twers[ids[i]].info;
+    }
   }
   return info + "</div>";
 };
@@ -226,12 +229,14 @@ function simulatePlaceholder(element, text) {
   if (!WebKitDetect.isWebKit()) {
     element.val(text);
     element.focus(function() {
-      if (this.value == text)
-	this.value = "";
+      if (this.value === text) {
+        this.value = "";
+      }
     });
     element.blur(function() {
-      if (this.value == "")
-	this.value = text;
+      if (this.value === "") {
+        this.value = text;
+      }
     });
   }
 }
@@ -241,7 +246,7 @@ $(document).ready(function() {
   overwatering.starling.repository.loadAll({
     success: function(all) {
       for (i = 0; i < all.length; ++i) {
-  	overwatering.starling.world.add(all[i]);
+        overwatering.starling.world.add(all[i]);
       }
     },
     failure: function() {}
@@ -261,15 +266,15 @@ function addBirthplace() {
   twer.resolve(overwatering.starling.googleMaps, {
     success: function() {
       overwatering.starling.repository.save(twer, {
-	success: function() {
-	  overwatering.starling.world.add(twer);
-	  $("#thanks").slideDown();
-	  $("#where").slideUp();
-	},
-	failure: function() {
-	  $("#bad-request").slideDown();
-	  $("#where").slideUp();
-	}
+        success: function() {
+          overwatering.starling.world.add(twer);
+          $("#thanks").slideDown();
+          $("#where").slideUp();
+        },
+        failure: function() {
+          $("#bad-request").slideDown();
+          $("#where").slideUp();
+        }
       });
     },
     failure: function() {

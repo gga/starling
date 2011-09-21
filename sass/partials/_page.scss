@@ -24,6 +24,16 @@ body.bp {
     @include column($adding-columns, true);
   }
 
+  #body {
+    height: 500px;
+    @include column(24, true);
+
+    #world {
+      height: 100%;
+      margin: 1.2em;
+    }
+  }
+
   font: {
     weight: lighter;
   }
