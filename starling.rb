@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'logger'
 require 'active_record'
+require 'haml'
 
 require 'lib/env'
 require 'lib/thoughtworker'
@@ -33,6 +34,7 @@ class Starling < Sinatra::Base
   end
 
   get '/' do
+    content_type :html
     File.read('public/index.html')
   end
 
@@ -58,7 +60,7 @@ class Starling < Sinatra::Base
     end
   end
 
-  post '/nest' do
+  post '/twer' do
     begin
       twer = ThoughtWorker.create!(:name => params[:name],
                                    :human_address => params[:human_address],

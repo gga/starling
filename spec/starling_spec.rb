@@ -22,9 +22,10 @@ describe 'starling' do
       :country => "Brazil" } }
 
   it "should render the index on a GET of /" do
+    File.should_receive(:read).with('public/index.html').and_return("rendered index")
     get '/'
     last_response.should be_ok
-    last_response.body.should == "rendering index"
+    last_response.body.should == "rendered index"
   end
 
   it "should return json for a ThoughtWorker on request" do
@@ -90,14 +91,14 @@ describe 'starling' do
     twer = mock('thoughtworker')
     twer.stub(:id).and_return(42)
     ThoughtWorker.stub(:create!).and_return(twer)
-    post '/nest', attributes
+    post '/twer', attributes
     last_response.should be_redirect
     last_response.location.should == "http://example.org/twer/42"
   end
 
   it "should fail with a 400 when the data is not provided correctly" do
     ThoughtWorker.stub(:create!).and_raise(ActiveRecord::RecordInvalid.new(ThoughtWorker.new))
-    post '/nest', attributes
+    post '/twer', attributes
     last_response.status.should == 400
   end
 end

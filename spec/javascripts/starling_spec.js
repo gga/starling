@@ -88,7 +88,7 @@ describe("overwatering.starling.Repository", function() {
       var succeeded = jasmine.createSpy('save success');
       overwatering.starling.repository.save(twer, { success: succeeded, failure: function() {} });
       expect(overwatering.starling.backend.post).toHaveBeenCalled();
-      expect(overwatering.starling.backend.post.mostRecentCall.args[0]).toEqual('/nest');
+      expect(overwatering.starling.backend.post.mostRecentCall.args[0]).toEqual('/twer');
       expect(overwatering.starling.backend.post.mostRecentCall.args[1]).
         toEqual({ name: twer.name,
                   human_address: twer.human_address,

@@ -124,7 +124,7 @@ overwatering.starling.ThoughtWorker.prototype.resolve = function(geocoder, callb
 };
 
 overwatering.starling.repository.save = function(twer, callbacks) {
-  overwatering.starling.backend.post('/nest', {
+  overwatering.starling.backend.post('/twer', {
     name: twer.name,
     human_address: twer.human_address,
     latitude: twer.latLng[0],

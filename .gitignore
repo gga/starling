@@ -3,3 +3,4 @@ backups
 sinatra.log
 /.sass-cache/
 /public/stylesheets/*.css
+/public/index.html
