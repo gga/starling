@@ -10,3 +10,8 @@ watch('sass/(.*)\.scss') do
   system 'rake', 'css'
   growl "Sass -> CSS"
 end
+
+watch('haml/(.*)\.haml') do
+  system 'rake', 'html'
+  growl "Haml -> HTML"
+end
