@@ -1,5 +1,6 @@
 source :gemcutter
 
+gem "rack", "1.2.1"
 gem "rake", "0.8.7"
 gem "sinatra"
 gem "haml"
