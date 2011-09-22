@@ -16,6 +16,7 @@ body.bp {
   #titles {
     $titles-columns: floor($blueprint-grid-columns / 2) - 1;
     @include column($titles-columns);
+    @include prepend-top(2em);
   }
 
   #adding {
@@ -30,7 +31,6 @@ body.bp {
 
     #world {
       height: 100%;
-      margin: 1.2em;
     }
   }
 
