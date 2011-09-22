@@ -1,10 +1,12 @@
 class CreateThoughtWorkerTable < ActiveRecord::Migration
   def self.up
-    create_table :thought_workers do |t|
-      t.string :name
-      t.string :human_address
-      t.string :latitude
-      t.string :longitude
+    if not table_exists? :thought_workers
+      create_table :thought_workers do |t|
+        t.string :name
+        t.string :human_address
+        t.string :latitude
+        t.string :longitude
+      end
     end
   end
 
