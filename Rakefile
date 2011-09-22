@@ -54,18 +54,26 @@ task :db => :environment do
   ActiveRecord::Migrator.migrate("db/migrations")
 end
 
+desc "Compiles the Haml to HTML to be served statically"
+task :html => "haml/index.haml" do
+  sh "haml --unix-newlines --format html5 haml/index.haml public/index.html"
+end
+
 desc "Compiles the SCSS to CSS to be served statically"
 task :css do
   sh "compass compile . --sass-dir sass --css-dir public/stylesheets"
 end
 
+desc "Builds all the static assets"
+task :build => [:html, :css]
+
 desc "Runs locally"
-task :local => [:db, :css] do
+task :local => [:db, :build] do
   sh "rackup -p 4567 --env development"
 end
 
 desc "Deploys the application with Capistrano"
-task :deploy => :css do
+task :deploy => :build do
   sh "cap backup"
   sh "cap deploy"
 end

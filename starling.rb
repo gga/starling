@@ -1,7 +1,5 @@
 require 'sinatra/base'
 require 'logger'
-require 'haml'
-require 'sass'
 require 'active_record'
 
 require 'lib/env'
@@ -35,7 +33,7 @@ class Starling < Sinatra::Base
   end
 
   get '/' do
-    haml :index
+    File.read('public/index.html')
   end
 
   get '/twer' do
