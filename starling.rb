@@ -3,15 +3,15 @@ require 'logger'
 require 'active_record'
 require 'haml'
 
-require 'lib/env'
-require 'lib/thoughtworker'
+require './lib/env'
+require './lib/thoughtworker'
 
 class Starling < Sinatra::Base
 
   configure do
     LOGGER = Logger.new("sinatra.log") 
 
-    set :public, File.dirname(__FILE__) + '/public'
+    set :public_folder, File.dirname(__FILE__) + '/public'
     enable :methodoverride
 
     init settings.environment

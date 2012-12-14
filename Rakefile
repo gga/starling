@@ -32,13 +32,14 @@ namespace :testing do
   end
 end
 task :spec => ['testing:prepare', 'testing:db_clean', :db, 'testing:rspec']
-task :features => ['testing:prepare', 'testing:db_clean', :db, 'testing:features']
+task :features => ['testing:prepare', 'testing:db_clean', :db, :css, :html, 'testing:features']
 task :jspec => 'testing:jasmine:ci'
 
 desc "Run all tests across the application"
 task :verify => [:spec, :jspec, :features]
 
 task :environment do
+  $: << File.dirname(__FILE__)
   require 'sinatra'
   require 'logger'
   require 'lib/env'
@@ -56,7 +57,7 @@ end
 
 desc "Compiles the Haml to HTML to be served statically"
 task :html => "haml/index.haml" do
-  sh "haml --unix-newlines --format html5 haml/index.haml public/index.html"
+  sh "bundle exec haml --unix-newlines --format html5 haml/index.haml public/index.html"
 end
 
 desc "Compiles the SCSS to CSS to be served statically"
@@ -69,7 +70,7 @@ task :build => [:html, :css]
 
 desc "Runs locally"
 task :local => [:db, :build] do
-  sh "rackup -p 4567 --env development"
+  sh "bundle exec rackup -p 4567 --env development"
 end
 
 desc "Deploys the application with Capistrano"
@@ -87,5 +88,14 @@ end
 
 desc "Starts up watchr for starling"
 task :watchr do
-  system "watchr", "watchr.rb"
+  sh "watchr watchr.rb"
+end
+
+begin
+  require 'jasmine'
+  load 'jasmine/tasks/jasmine.rake'
+rescue LoadError
+  task :jasmine do
+    abort "Jasmine is not available. In order to run jasmine, you must: (sudo) gem install jasmine"
+  end
 end

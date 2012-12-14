@@ -1,12 +1,12 @@
 source :gemcutter
 
-gem "rack", "1.2.1"
-gem "rake", "0.8.7"
+gem "rack"
+gem "rake"
 gem "sinatra"
 gem "haml"
-gem "sqlite3", "~> 1.3.4"
-gem "sqlite3-ruby", "1.2.1"
-gem "activerecord", "2.3.8"
+gem "sqlite3"
+gem "sqlite3-ruby"
+gem "activerecord"
 
 group :development do
   gem "compass"
@@ -18,10 +18,10 @@ group :test do
   gem "rack-test"
   gem "rspec"
   gem "machinist"
-  gem "faker"  
-  gem "json", "~> 1.4.6"
+  gem "faker"
+  gem "json"
   gem "jasmine"
-  gem "cucumber", ">= 0.10"
+  gem "cucumber"
   gem "capybara"
   gem "cucumber-sinatra"
 end

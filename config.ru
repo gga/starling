@@ -10,6 +10,6 @@ Bundler.require
 set :run, false
 set :environment, :production
 
-require 'starling'
+require './starling'
 
 run Starling

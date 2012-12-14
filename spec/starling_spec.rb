@@ -1,4 +1,4 @@
-require 'spec/spec_helper.rb'
+require 'spec_helper.rb'
 require 'json'
 require 'starling'
 
@@ -33,7 +33,7 @@ describe 'starling' do
     ThoughtWorker.stub(:find).and_return(twer)
     get '/twer/42'
     last_response.should be_ok
-    last_response.content_type.should == "application/json"
+    last_response.content_type.should == "application/json;charset=utf-8"
 
     tw_data = JSON.parse(last_response.body)
     tw_data["id"].should == twer.id
@@ -54,7 +54,7 @@ describe 'starling' do
     ThoughtWorker.stub(:all).and_return(all)
     get '/twer'
     last_response.should be_ok
-    last_response.content_type.should == "application/json"
+    last_response.content_type.should == "application/json;charset=utf-8"
 
     twers = JSON.parse(last_response.body)
     twers.should have(3).items
@@ -71,7 +71,7 @@ describe 'starling' do
     ThoughtWorker.stub(:all).and_return([])
     get '/twer'
     last_response.should be_ok
-    last_response.content_type.should == "application/json"
+    last_response.content_type.should == "application/json;charset=utf-8"
     JSON.parse(last_response.body).should be_empty
   end
   
