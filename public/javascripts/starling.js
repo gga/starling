@@ -25,7 +25,8 @@ overwatering.starling.googleMaps.initialize = function(startLatLng, target, clus
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
   this.clusters = new MarkerClusterer(this.map, [], {
-    zoomOnClick: false
+    zoomOnClick: false,
+    imagePath: 'images/m'
   });
   google.maps.event.addListener(this.clusters, 'clusterclick', function(cluster) {
     if (cluster.getSize() < 10) {
